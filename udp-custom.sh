@@ -1,23 +1,26 @@
 #!/bin/bash
-
+clear
 cd
 rm -rf /etc/udp
 mkdir -p /etc/udp
-
-# change to time GMT+7
 echo "change to time GMT+7"
 ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+cd /etc/udp
+wget -q -O udp-custom "https://github.com/zhets/udp-custom/raw/main/udp-custom-linux-amd64"
+chmod +x udp-custom
+cd
 
-# install udp-custom
-echo -e " Installing UDP Custom By FV STORE & Caramel store" | lolcat
-sleep 2 
-clear
-echo -e " Downloading Resource . . . "
-wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1ixz82G_ruRBnEEp4vLPNF2KZ1k8UfrkV' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1ixz82G_ruRBnEEp4vLPNF2KZ1k8UfrkV" -O /etc/udp/udp-custom && rm -rf /tmp/cookies.txt
-chmod +x /etc/udp/udp-custom
+cat <<EOF > /etc/udp/config.json
+{
+  "listen": ":36712",
+  "stream_buffer": 33554432,
+  "receive_buffer": 83886080,
+  "auth": {
+    "mode": "passwords"
+  }
+}
+EOF
 
-echo -e "downloading default config . . . "
-wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1klXTiKGUd2Cs5cBnH3eK2Q1w50Yx3jbf' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1klXTiKGUd2Cs5cBnH3eK2Q1w50Yx3jbf" -O /etc/udp/config.json && rm -rf /tmp/cookies.txt
 chmod 644 /etc/udp/config.json
 
 if [ -z "$1" ]; then
@@ -54,11 +57,10 @@ WantedBy=default.target
 EOF
 fi
 
-echo start service udp-custom
 systemctl start udp-custom &>/dev/null
-
-echo enable service udp-custom
 systemctl enable udp-custom &>/dev/null
-
-echo restart service udp-custom
 systemctl restart udp-custom &>/dev/null
+
+echo " Install udp succes "
+sleep 2 
+clear
