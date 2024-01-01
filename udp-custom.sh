@@ -61,6 +61,6 @@ systemctl start udp-custom &>/dev/null
 systemctl enable udp-custom &>/dev/null
 systemctl restart udp-custom &>/dev/null
 
-echo " Install udp succes "
+echo " Install udp success "
 sleep 2 
 clear
